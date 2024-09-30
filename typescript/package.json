@@ -1,0 +1,16 @@
+{
+  "name": "crossmint-challenge",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "description": "Megaverse challenge where you can utilize creator API endpoints",
+  "author": "Kevin",
+  "type": "module",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "typescript": "^5.6.2"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.1"
+  }
+}
