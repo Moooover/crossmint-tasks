@@ -12,5 +12,8 @@
   },
   "devDependencies": {
     "tsx": "^4.19.1"
+  },
+  "scripts": {
+    "start": "npx tsx src/index.ts"
   }
 }

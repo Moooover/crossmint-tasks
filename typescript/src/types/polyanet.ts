@@ -10,9 +10,11 @@ export class Polyanet {
                 column,
                 candidateId: CANDIDATE_ID
             });
+            console.log("Polyanet created");
             return result.data;
         } catch (e) {
             console.error("Error occured while interacting with API endpoint.");
+            console.error(e);
         }
         return null;
     }
@@ -26,9 +28,11 @@ export class Polyanet {
                     candidateId: CANDIDATE_ID
                 }
             });
+            console.log("Polyanet removed");
             return result.data;
         } catch (e) {
             console.error("Error occured while interacting with API endpoint.");
+            console.error(e);
         }
         return null;
     }

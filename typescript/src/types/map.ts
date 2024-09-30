@@ -9,6 +9,7 @@ export class Map {
             return result.data.goal;
         } catch (e) {
             console.error("Error occured while interacting with API endpoint.");
+            console.error(e);
         }
         return null;
     }

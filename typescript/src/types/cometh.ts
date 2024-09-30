@@ -11,9 +11,11 @@ export class Cometh {
                 direction,
                 candidateId: CANDIDATE_ID
             });
+            console.log("Cometh created");
             return result.data;
         } catch (e) {
             console.error("Error occured while interacting with API endpoint.");
+            console.error(e);
         }
         return null;
     }
@@ -27,9 +29,11 @@ export class Cometh {
                     candidateId: CANDIDATE_ID
                 }
             });
+            console.log("Cometh removed");
             return result.data;
         } catch (e) {
             console.error("Error occured while interacting with API endpoint.");
+            console.error(e);
         }
         return null;
     }

@@ -11,9 +11,11 @@ export class Soloon {
                 color,
                 candidateId: CANDIDATE_ID
             });
+            console.log("Soloon created");
             return result.data;
         } catch (e) {
             console.error("Error occured while interacting with API endpoint.");
+            console.error(e);
         }
         return null;
     }
@@ -27,9 +29,11 @@ export class Soloon {
                     candidateId: CANDIDATE_ID
                 }
             });
+            console.log("Soloon removed");
             return result.data;
         } catch (e) {
             console.error("Error occured while interacting with API endpoint.");
+            console.error(e);
         }
         return null;
     }

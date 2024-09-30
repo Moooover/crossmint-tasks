@@ -1,58 +1,106 @@
-use reqwest::Error;
-use serde_json::{ json };
+use crate::constants::{API_ENDPOINT, CANDIDATE_ID};
+use reqwest::{header::CONTENT_TYPE, Error};
 use serde::{Deserialize, Serialize};
-use crate::constants::{ API_ENDPOINT, CANDIATE_ID};
+use serde_json::{ json, Value };
 
-pub struct Polyanet {}
+pub trait Entity {
+    fn endpoint() -> &'static str;
 
-impl Polyanet {
-    pub async fn create(row: u64, column: u64) -> Result<(), Error> {
-        //let params = [("row", row), ("column", column)];
-        let client = reqwest::Client::new();
-        let response = client.post(format!("{}polyanets", API_ENDPOINT)).json(&json!({
-            "row": row,
-            "column": column,
-            "candidateId": CANDIATE_ID
-        })).send().await?;
+    fn create(data: Self) -> impl std::future::Future<Output = Result<(), Error>> + Send 
+        where Self: Sized + Serialize + Send
+    {
+        async move {
+            // insert `candidateId` to the object
+            let mut json_value = serde_json::to_value(&data).unwrap();
+            if let Some(obj) = json_value.as_object_mut() {
+                obj.insert("candidateId".to_string(), Value::String(CANDIDATE_ID.into()));
+            }
 
-        println!("Status: {}", response.status());
+            // println!("JSON obj {}", json_value);
 
-        let body = response.text().await?;
-        println!("body {}", body);
-        
-        Ok(())
+            let client = reqwest::Client::new();
+            let response = client
+                .post(format!("{}{}", API_ENDPOINT, Self::endpoint()))
+                .header(CONTENT_TYPE, "application/json")
+                .json(&json_value)
+                .send()
+                .await?;
+
+            println!("Status: {}", response.status());
+            let body = response.text().await?;
+            println!("body {}", body);
+
+            Ok(())
+        }
     }
 
-    pub async fn remove(row: u64, column: u64) -> Result<(), Error> {
-        let client = reqwest::Client::new();
-        let response = client.delete(format!("{}polyanets", API_ENDPOINT)).json(&json!({
-            "row": row,
-            "column": column,
-            "candidateId": CANDIATE_ID
-        })).send().await?;
+    fn remove(row: u64, column: u64) -> impl std::future::Future<Output = Result<(), Error>> + Send {
+        async move {
+            let client = reqwest::Client::new();
+            let response = client
+                .delete(format!("{}{}", API_ENDPOINT, Self::endpoint()))
+                .json(&json!({
+                    "row": row,
+                    "column": column,
+                    "candidateId": CANDIDATE_ID
+                }))
+                .send()
+                .await?;
 
-        println!("Status: {}", response.status());
+            println!("Status: {}", response.status());
+            let body = response.text().await?;
+            println!("body {}", body);
 
-        let body = response.text().await?;
-        println!("body {}", body);
-        
-        Ok(())
+            Ok(())
+    }}
+}
+
+#[derive(Serialize, Clone)]
+pub struct Polyanet {
+    pub row: u64,
+    pub column: u64
+}
+
+impl Entity for Polyanet {
+    fn endpoint() -> &'static str {
+        "polyanets"
     }
 }
 
+#[derive(Serialize, Clone)]
+pub struct Cometh {
+    pub row: u64,
+    pub column: u64,
+    pub direction: String
+}
+
+impl Entity for Cometh {
+    fn endpoint() -> &'static str {
+        "comeths"
+    }
+}
+
+#[derive(Serialize, Clone)]
+pub struct Soloon {
+    pub row: u64,
+    pub column: u64,
+    pub color: String
+}
+
+impl Entity for Soloon {
+    fn endpoint() -> &'static str {
+        "soloons"
+    }
+}
 #[derive(Deserialize, Debug)]
 pub struct GoalMap {
-    pub goal: Vec<Vec<String>>
+    pub goal: Vec<Vec<String>>,
 }
 
 impl GoalMap {
     pub async fn get_goal_map() -> Result<Self, Error> {
-        let response = reqwest::get(format!("{}map/{}/goal", API_ENDPOINT, CANDIATE_ID)).await?;
-        println!("Status: {}", response.status());
-
-        let g_map: GoalMap  = response.json().await?;
-        println!("body: {:?}", g_map);
-
+        let response = reqwest::get(format!("{}map/{}/goal", API_ENDPOINT, CANDIDATE_ID)).await?;
+        let g_map: GoalMap = response.json().await?;
         Ok(g_map)
     }
 }
