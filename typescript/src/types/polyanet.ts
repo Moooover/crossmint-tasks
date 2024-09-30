@@ -1,39 +1,17 @@
-import axios from 'axios';
-import { API_ENDPOINT, CANDIDATE_ID } from '../constants';
+import { Entity } from './entity';
 
-export class Polyanet {
-    constructor() { }
-    static async create(row: number, column: number) {
-        try {
-            let result = await axios.post(`${API_ENDPOINT}polyanets`, {
-                row,
-                column,
-                candidateId: CANDIDATE_ID
-            });
-            console.log("Polyanet created");
-            return result.data;
-        } catch (e) {
-            console.error("Error occured while interacting with API endpoint.");
-            console.error(e);
-        }
-        return null;
+export class Polyanet extends Entity {
+    constructor() {
+        super('polyanets')
     }
-
+    static async create(row: number, column: number) {
+        const inst = new Polyanet();
+        return await inst.create({
+            row, column
+        })
+    }
     static async remove(row: number, column: number) {
-        try {
-            let result = await axios.delete(`${API_ENDPOINT}polyanets`, {
-                data: {
-                    row,
-                    column,
-                    candidateId: CANDIDATE_ID
-                }
-            });
-            console.log("Polyanet removed");
-            return result.data;
-        } catch (e) {
-            console.error("Error occured while interacting with API endpoint.");
-            console.error(e);
-        }
-        return null;
+        const inst = new Polyanet();
+        return await inst.remove(row, column);
     }
 }

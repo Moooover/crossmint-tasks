@@ -1,40 +1,17 @@
-import axios from 'axios';
-import { API_ENDPOINT, CANDIDATE_ID } from '../constants';
+import { Entity } from './entity';
 
-export class Cometh {
-    constructor() { }
-    static async create(row: number, column: number, direction: string) {
-        try {
-            let result = await axios.post(`${API_ENDPOINT}comeths`, {
-                row,
-                column,
-                direction,
-                candidateId: CANDIDATE_ID
-            });
-            console.log("Cometh created");
-            return result.data;
-        } catch (e) {
-            console.error("Error occured while interacting with API endpoint.");
-            console.error(e);
-        }
-        return null;
+export class Cometh extends Entity {
+    constructor() { 
+        super('comeths')
     }
-
+    static async create(row: number, column: number, direction: string) {
+        const inst = new Cometh();
+        return await inst.create({
+            row, column, direction
+        })
+    }
     static async remove(row: number, column: number) {
-        try {
-            let result = await axios.delete(`${API_ENDPOINT}comeths`, {
-                data: {
-                    row,
-                    column,
-                    candidateId: CANDIDATE_ID
-                }
-            });
-            console.log("Cometh removed");
-            return result.data;
-        } catch (e) {
-            console.error("Error occured while interacting with API endpoint.");
-            console.error(e);
-        }
-        return null;
+        const inst = new Cometh();
+        return await inst.remove(row, column);
     }
 }

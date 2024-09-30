@@ -8,26 +8,50 @@ const main = async () => {
         console.error("Error while getting a goal Map.");
         return;
     }
-    for (let row = 0; row < goalMap.length; row ++) {
-        let goalRow = goalMap[row];
-        for (let col = 0; col < goalRow.length; col++) {
-            if (goalRow[col].includes("SOLOON")) {
-                const color = goalRow[col].split('_')[0].trim();
-                await Soloon.create(row, col, color.toLowerCase());      
-                // to avoid 429: Too many requests
-                await sleep(1000);          
-            } else if (goalRow[col].includes("COMETH")) {
-                const dir = goalRow[col].split('_')[0].trim();
-                await Cometh.create(row, col, dir.toLowerCase());
-                // to avoid 429: Too many requests
-                await sleep(1000);
-            } else if (goalRow[col] === 'POLYANET') {
-                await Polyanet.create(row, col);
-                // to avoid 429: Too many requests
-                await sleep(1000);
+    const isRemove = false;
+    if (isRemove) {
+        for (let row = 0; row < goalMap.length; row++) {
+            let goalRow = goalMap[row];
+            for (let col = 0; col < goalRow.length; col++) {
+                if (goalRow[col].includes("SOLOON")) {
+                    await Soloon.remove(row, col);
+                    // to avoid 429: Too many requests
+                    await sleep(1000);
+                } else if (goalRow[col].includes("COMETH")) {
+                    await Cometh.remove(row, col);
+                    // to avoid 429: Too many requests
+                    await sleep(1000);
+                } else if (goalRow[col] === 'POLYANET') {
+                    await Polyanet.remove(row, col);
+                    // to avoid 429: Too many requests
+                    await sleep(1000);
+                }
             }
         }
     }
+    else {
+        for (let row = 0; row < goalMap.length; row++) {
+            let goalRow = goalMap[row];
+            for (let col = 0; col < goalRow.length; col++) {
+                if (goalRow[col].includes("SOLOON")) {
+                    const color = goalRow[col].split('_')[0].trim();
+                    await Soloon.create(row, col, color.toLowerCase());
+                    // to avoid 429: Too many requests
+                    await sleep(1000);
+                } else if (goalRow[col].includes("COMETH")) {
+                    const dir = goalRow[col].split('_')[0].trim();
+                    await Cometh.create(row, col, dir.toLowerCase());
+                    // to avoid 429: Too many requests
+                    await sleep(1000);
+                } else if (goalRow[col] === 'POLYANET') {
+                    await Polyanet.create(row, col);
+                    // to avoid 429: Too many requests
+                    await sleep(1000);
+                }
+            }
+        }
+    }
+
 }
 
 main();

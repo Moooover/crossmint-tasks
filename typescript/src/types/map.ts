@@ -8,8 +8,7 @@ export class Map {
             let result = await axios.get(`${API_ENDPOINT}map/${CANDIDATE_ID}/goal`);
             return result.data.goal;
         } catch (e) {
-            console.error("Error occured while interacting with API endpoint.");
-            console.error(e);
+            console.error("Error occured while interacting with API endpoint.\n e: ", e);
         }
         return null;
     }
